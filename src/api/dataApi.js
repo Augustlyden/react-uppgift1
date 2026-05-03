@@ -1,90 +1,46 @@
 import apiClient from "./axiosConfig";
 
-export const getAllSpells = async () => {
+export const getAllItems = async (category) => {
   try {
-    const response = await apiClient.get('/spells');
+    const response = await apiClient.get(`/${category}`);
     return response.data;
   } catch (error) {
-    throw new Error(`getAllSpells failed: ${error.message}`);
+    throw new Error(`getAllItems failed: ${error.message}`);
   }
 }
 
-export const getSpellByIndex = async (index) => {
+export const getItemByIndex = async ( category, index) => {
   try {
-    const response = await apiClient.get(`/spells/${index}`);
+    const response = await apiClient.get(`/${category}/${index}`);
     return response.data
   } catch (error) {
-    throw new Error(`getSpellsByIndex ${index} failed: ${error.message}`);
+    throw new Error(`getItemByIndex ${index} failed: ${error.message}`);
   }
 }
 
-export const createSpell = async (spellData) => {
+export const createItem = async (category, itemData) => {
   try {
-    const respone = await apiClient.post('/spells', spellData);
+    const respone = await apiClient.post(`/${category}`, spellData);
     return respone.data;
   } catch (error) {
-    throw new Error(`createSpell failed: ${error.message}`);
+    throw new Error(`createItem failed: ${error.message}`);
   }
 }
 
-export const updateSpell = async (index, spellData) => {
+export const updateItem = async (category, index, itemData) => {
   try {
-    const respone = await apiClient.patch(`/spells/${index}`, spellData);
+    const respone = await apiClient.patch(`/${category}/${index}`, itemData);
     return respone.data;
   } catch (error) {
-    throw new Error(`updateSpell ${index} failed: ${error.message}`);
+    throw new Error(`updateItem ${index} failed: ${error.message}`);
   }
 }
 
-export const deleteSpell = async (index) => {
+export const deleteItem = async (category, index) => {
   try {
-    const response = await apiClient.delete(`/spells/${index}`);
+    const response = await apiClient.delete(`/${category}/${index}`);
     return response.data;
   } catch (error) {
-    throw new Error(`deleteSpell ${index} failed: ${error.message}`);
-  }
-}
-
-export const getAllEquipment = async () => {
-  try {
-    const response = await apiClient.get('/equipment');
-    return response.data;
-  } catch (error) {
-    throw new Error(`getAllEquipment failed: ${error.message}`);
-  }
-}
-
-export const getEquipmentByIndex = async (index) => {
-  try {
-    const response = await apiClient.get(`/equipment/${index}`);
-  } catch {
-    throw new Error(`getEquipemtByIndex ${index} failed: ${error.message}`);
-  }
-}
-
-export const createEquipment = async (equipmentData) => {
-  try {
-    const respone = await apiClient.post('/equipment', equipmentData);
-    return respone.data;
-  } catch (error) {
-    throw new Error(`createSpell failed: ${error.message}`);
-  }
-}
-
-export const updateEquipment = async (index, equipmentData) => {
-  try {
-    const respone = await apiClient.patch(`/equipment/${index}`, equipmentData);
-    return respone.data;
-  } catch (error) {
-    throw new Error(`updateSpell ${index} failed: ${error.message}`);
-  }
-}
-
-export const deleteEquipment = async (index) => {
-  try {
-    const response = await apiClient.delete(`/equipment/${index}`);
-    return response.data;
-  } catch (error) {
-    throw new Error(`deleteSpell ${index} failed: ${error.message}`);
+    throw new Error(`deleteItem ${index} failed: ${error.message}`);
   }
 }
