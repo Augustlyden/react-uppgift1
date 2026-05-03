@@ -1,18 +1,30 @@
+import { formatEquipmentDetails, formatItemData, formatSpellDetails } from "../helpers/formatters";
 import apiClient from "./axiosConfig";
 
 export const getAllItems = async (category) => {
   try {
     const response = await apiClient.get(`/${category}`);
-    return response.data;
+    const cleanedData = response.data.results.map(item => 
+      formatItemData(item, category)
+    )
+    return cleanedData;
   } catch (error) {
     throw new Error(`getAllItems failed: ${error.message}`);
   }
 }
 
-export const getItemByIndex = async ( category, index) => {
+export const getItemByIndex = async (category, index) => {
   try {
     const response = await apiClient.get(`/${category}/${index}`);
-    return response.data
+    const rawData = response.data;
+    
+    if (category === 'spells') {
+      return formatSpellDetails(rawData);
+    } else if (category === 'equipment') {
+      return formatEquipmentDetails(rawData)
+    }
+
+    return rawData;
   } catch (error) {
     throw new Error(`getItemByIndex ${index} failed: ${error.message}`);
   }
