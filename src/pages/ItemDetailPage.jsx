@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react'
-import { useNavigate, useParams } from 'react-router-dom'
+import { useParams, Link } from 'react-router-dom'
 import { getItemByIndex } from '../api/dataApi';
+import SpellDetail from '../components/SpellDetail';
+import EquipmentDetail from '../components/EquipmentDetail';
 
 const ItemDetailPage = () => {
   const { category, slug } = useParams();
-  const navigate = useNavigate();
 
   const [item, setItem] = useState(null);
   const [error, setError] = useState(null);
@@ -42,9 +43,14 @@ const ItemDetailPage = () => {
     )
   }
   return (
-    <div>
-      
-    </div>
+    <main>
+      <Link to="/shop" className='back-btn'>Back to shop</Link>
+      {category === 'spells' ? (
+        <SpellDetail item={item} />
+      ) : (
+        <EquipmentDetail item={item} />
+      )}
+    </main>
   )
 }
 
