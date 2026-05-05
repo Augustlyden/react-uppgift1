@@ -1,5 +1,6 @@
 import { formatEquipmentDetails, formatItemData, formatSpellDetails } from "../helpers/formatters";
 import apiClient from "./axiosConfig";
+import supabaseClient from "./supabaseConfig";
 
 export const getAllItems = async (category) => {
   try {
@@ -30,29 +31,38 @@ export const getItemByIndex = async (category, index) => {
   }
 }
 
-export const createItem = async (category, itemData) => {
+export  const getInventory = async (table) => {
   try {
-    const respone = await apiClient.post(`/${category}`, spellData);
-    return respone.data;
+    const response = await supabaseClient.get(`/${table}`)
+    return response.data
+  } catch (error) {
+    throw new Error(`getInventory failed: ${error.message}`);
+  }
+}
+
+export const createItem = async (table, itemData) => {
+  try {
+    const respone = await supabaseClient.post(`/${table}`, itemData);
+    return respone.data[0];
   } catch (error) {
     throw new Error(`createItem failed: ${error.message}`);
   }
 }
 
-export const updateItem = async (category, index, itemData) => {
+export const updateItem = async (table, id, itemData) => {
   try {
-    const respone = await apiClient.patch(`/${category}/${index}`, itemData);
+    const respone = await supabaseClient.patch(`/${table}?id=eq.${id}`, itemData);
     return respone.data;
   } catch (error) {
-    throw new Error(`updateItem ${index} failed: ${error.message}`);
+    throw new Error(`updateItem ${id} failed: ${error.message}`);
   }
 }
 
-export const deleteItem = async (category, index) => {
+export const deleteItem = async (table, id) => {
   try {
-    const response = await apiClient.delete(`/${category}/${index}`);
+    const response = await supabaseClient.delete(`/${table}?id=eq.${id}`);
     return response.data;
   } catch (error) {
-    throw new Error(`deleteItem ${index} failed: ${error.message}`);
+    throw new Error(`deleteItem ${id} failed: ${error.message}`);
   }
 }

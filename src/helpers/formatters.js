@@ -1,13 +1,14 @@
 export const getLevelText = (level) => {
   if (level === undefined) return null;
-  return level === 0 ? "Cantrip" : level
+  return level === 0 ? "Cantrip" : `${level}`
 }
 
 export const formatItemData = (item, category) => {
   return {
     id: `${category}-${item.index}`,
-    title: item.name,
+    name: item.name,
     slug: item.index,
+    quantity: 1,
     type: category,
     url: `/${category}/${item.index}`,
     level: item.level,

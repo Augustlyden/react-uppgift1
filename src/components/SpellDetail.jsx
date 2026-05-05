@@ -23,7 +23,7 @@ const SpellDetail = ({item}) => {
           <dt>Components</dt>
           <dd>{item.components}</dd>
           <dt>Materials</dt>
-          <dd>{item.materials}</dd>
+          <dd>{item.material}</dd>
         </dl>
         <div className='item-desc'>
           <p><span>Spell Description</span> <br />{item.desc}</p>
