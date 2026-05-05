@@ -4,7 +4,9 @@ import ItemList from '../components/ItemList';
 
 const ShopPage = () => {
   const [items, setItems] = useState([]);
-  const [activeCategory, setActiveCategory] = useState('spells')
+  const [activeCategory, setActiveCategory] = useState(
+    localStorage.getItem('selectedCategory') || 'spells'
+  )
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(true)
 
@@ -23,7 +25,8 @@ const ShopPage = () => {
   }
 
   useEffect(() => {
-    fetchItems();
+    fetchItems()
+    localStorage.setItem('selectedCategory', activeCategory)
   }, [activeCategory])
 
   if (error) {
