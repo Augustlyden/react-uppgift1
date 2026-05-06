@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link, useLocation } from 'react-router-dom'
 import { getItemByIndex } from '../api/dataApi';
 import SpellDetail from '../components/SpellDetail';
 import EquipmentDetail from '../components/EquipmentDetail';
 
 const ItemDetailPage = () => {
   const { category, slug } = useParams();
+  const location = useLocation();
 
   const [item, setItem] = useState(null);
   const [error, setError] = useState(null);
@@ -15,6 +16,10 @@ const ItemDetailPage = () => {
     try {
       setLoading(true);
       setError(null);
+      /* if (location.state.item?.is_custom) {
+        setItem(location.state.item);
+        return
+      } */
       const data = await getItemByIndex(category, slug);
       setItem(data);
     } catch (error) {

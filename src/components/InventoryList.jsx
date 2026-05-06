@@ -1,18 +1,19 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import Item from './Item.jsx'
+import Item from './Item'
 
-const ItemList = ({items, onAdd}) => {
+const InventoryList = ({items, onDelete, onUpdate}) => {
   return (
     <div>
       <section className='item-container'>
         {items.map(item => (
           <article key={item.id} className='item-card'>
             <Link to={item.url}>
-              <Item item={item}/>
+              <Item item={item} showQuantity={true}/>
             </Link>
             <div>
-              <button onClick={() => onAdd(item)}>Add to inventory</button>
+              <button onClick={() => onDelete(item.id)}>Delete</button>
+              <button onClick={() => onUpdate(item.id)}>Update</button>
             </div>
           </article>
         ))}
@@ -21,4 +22,4 @@ const ItemList = ({items, onAdd}) => {
   )
 }
 
-export default ItemList
+export default InventoryList

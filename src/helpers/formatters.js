@@ -12,7 +12,8 @@ export const formatItemData = (item, category) => {
     type: category,
     url: `/${category}/${item.index}`,
     level: item.level,
-    levelText: getLevelText(item.level)
+    levelText: getLevelText(item.level),
+    is_custom: false
   }
 }
 

@@ -31,9 +31,9 @@ export const getItemByIndex = async (category, index) => {
   }
 }
 
-export  const getInventory = async (table) => {
+export  const getInventory = async () => {
   try {
-    const response = await supabaseClient.get(`/${table}`)
+    const response = await supabaseClient.get('inventory')
     return response.data
   } catch (error) {
     throw new Error(`getInventory failed: ${error.message}`);
