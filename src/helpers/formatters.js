@@ -1,6 +1,6 @@
 export const getLevelText = (level) => {
   if (level === undefined) return null;
-  return level === 0 ? "Cantrip" : `${level}`
+  return level === 0 ? "Cantrip" : `Level ${level}`
 }
 
 export const formatItemData = (item, category) => {

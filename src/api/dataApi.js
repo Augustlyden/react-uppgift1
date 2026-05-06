@@ -31,16 +31,16 @@ export const getItemByIndex = async (category, index) => {
   }
 }
 
-export  const getInventory = async () => {
+export  const getInventory = async (table = 'inventory') => {
   try {
-    const response = await supabaseClient.get('inventory')
+    const response = await supabaseClient.get(`/${table}?select=*&order=name.asc`)
     return response.data
   } catch (error) {
     throw new Error(`getInventory failed: ${error.message}`);
   }
 }
 
-export const createItem = async (table, itemData) => {
+export const createItem = async (itemData, table = 'inventory') => {
   try {
     const respone = await supabaseClient.post(`/${table}`, itemData);
     return respone.data[0];
@@ -49,7 +49,7 @@ export const createItem = async (table, itemData) => {
   }
 }
 
-export const updateItem = async (table, id, itemData) => {
+export const updateItem = async (id, itemData, table = 'inventory') => {
   try {
     const respone = await supabaseClient.patch(`/${table}?id=eq.${id}`, itemData);
     return respone.data;
@@ -58,7 +58,7 @@ export const updateItem = async (table, id, itemData) => {
   }
 }
 
-export const deleteItem = async (table, id) => {
+export const deleteItem = async (id, table = 'inventory') => {
   try {
     const response = await supabaseClient.delete(`/${table}?id=eq.${id}`);
     return response.data;

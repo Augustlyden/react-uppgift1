@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { getAllItems, createItem, updateItem } from '../api/dataApi';
 import ItemList from '../components/ItemList';
 
-const ShopPage = ({inventory, refresh}) => {
+const ShopPage = ({inventory, onAddItem, onUpdateQuantity}) => {
   const [items, setItems] = useState([]);
   const [activeCategory, setActiveCategory] = useState(
     localStorage.getItem('selectedCategory') || 'spells'
@@ -47,24 +47,7 @@ const ShopPage = ({inventory, refresh}) => {
 
   const handleAddToInventory = async (newItem) => {
     try {
-      const existingItem = inventory.find(item => item.id === newItem.id)
-
-      if (existingItem && newItem.type === 'spells') {
-        /* setShowModal(true) */
-        return
-      }
-
-      if (existingItem && newItem.type === 'equipment') {
-        const newQuantity = existingItem.quantity +1
-        await updateItem('inventory', existingItem.id, {quantity: newQuantity})
-        await refresh()
-        console.log(newQuantity)
-        return
-      }
-      
-      await createItem('inventory', newItem)
-      await refresh()
-      
+    await onAddItem(newItem)
     } catch (error) {
       console.error(`handleAddToInventory failed: ${newItem.name}`)
     }

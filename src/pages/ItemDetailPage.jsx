@@ -16,10 +16,11 @@ const ItemDetailPage = () => {
     try {
       setLoading(true);
       setError(null);
-      /* if (location.state.item?.is_custom) {
+      if (location.state.item?.is_custom) {
         setItem(location.state.item);
+        setLoading(false)
         return
-      } */
+      }
       const data = await getItemByIndex(category, slug);
       setItem(data);
     } catch (error) {
@@ -47,9 +48,12 @@ const ItemDetailPage = () => {
       <div className='loader'>Loading item...</div>
     )
   }
+
+  const backUrl = location.state?.item ? "/" : "/shop"
+  const backText = location.state?.item ? "Back to Inventory" : "Back to shop"
   return (
     <main>
-      <Link to="/shop" className='back-btn'>Back to shop</Link>
+      <Link to={backUrl} className='back-btn'>{backText}</Link>
       {category === 'spells' ? (
         <SpellDetail item={item} />
       ) : (
