@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { useParams, Link } from 'react-router-dom'
+import { useParams, Link, useLocation } from 'react-router-dom'
 import { getItemByIndex } from '../api/dataApi';
 import SpellDetail from '../components/SpellDetail';
 import EquipmentDetail from '../components/EquipmentDetail';
 
 const ItemDetailPage = () => {
   const { category, slug } = useParams();
+  const location = useLocation();
 
   const [item, setItem] = useState(null);
   const [error, setError] = useState(null);
@@ -15,6 +16,11 @@ const ItemDetailPage = () => {
     try {
       setLoading(true);
       setError(null);
+      if (location.state.item?.is_custom) {
+        setItem(location.state.item);
+        setLoading(false)
+        return
+      }
       const data = await getItemByIndex(category, slug);
       setItem(data);
     } catch (error) {
@@ -42,9 +48,12 @@ const ItemDetailPage = () => {
       <div className='loader'>Loading item...</div>
     )
   }
+
+  const backUrl = location.state?.item ? "/" : "/shop"
+  const backText = location.state?.item ? "Back to Inventory" : "Back to shop"
   return (
     <main>
-      <Link to="/shop" className='back-btn'>Back to shop</Link>
+      <Link to={backUrl} className='back-btn'>{backText}</Link>
       {category === 'spells' ? (
         <SpellDetail item={item} />
       ) : (
