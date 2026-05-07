@@ -15,9 +15,9 @@ const SpellDetail = ({item}) => {
           <dt>Duration</dt>
           <dd>{item.duration}</dd>
           <dt>Concentration</dt>
-          <dd>{item.concentration}</dd>
+          <dd>{item.concentration ? "Yes" : "No"}</dd>
           <dt>Ritual</dt>
-          <dd>{item.ritual}</dd>
+          <dd>{item.ritual ? "Yes" : "No"}</dd>
           <dt>Casting time</dt>
           <dd>{item.castingTime}</dd>
           <dt>Components</dt>

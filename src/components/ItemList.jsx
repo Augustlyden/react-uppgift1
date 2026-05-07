@@ -8,7 +8,7 @@ const ItemList = ({items, onAdd}) => {
       <section className='item-container'>
         {items.map(item => (
           <article key={item.id} className='item-card'>
-            <Link to={item.url} state={{ item: item }}>
+            <Link to={item.url}>
               <Item item={item}/>
             </Link>
             <div>

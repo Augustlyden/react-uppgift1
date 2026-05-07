@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { getInventory, updateItem } from '../api/dataApi'
 import InventoryList from '../components/InventoryList'
 
-const HomePage = ({inventory, refresh, onUpdate, onDelete}) => {
+const HomePage = ({inventory, refresh, onUpdate, onDelete, onEdit}) => {
   const [activeCategory, setActiveCategory] = useState(
     localStorage.getItem('selectedCategory') || 'spells'
   )
@@ -93,6 +93,7 @@ const HomePage = ({inventory, refresh, onUpdate, onDelete}) => {
           onDelete={confirmAndDelete}
           onIncrement={handleIncrement}
           onDecrement={handleDecrement}
+          onEdit={onEdit}
         />
       )}
     </main>

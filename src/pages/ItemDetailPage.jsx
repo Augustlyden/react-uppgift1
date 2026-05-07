@@ -16,7 +16,7 @@ const ItemDetailPage = () => {
     try {
       setLoading(true);
       setError(null);
-      if (location.state.item?.is_custom) {
+      if (location.state?.item?.is_custom) {
         setItem(location.state.item);
         setLoading(false)
         return
@@ -49,8 +49,10 @@ const ItemDetailPage = () => {
     )
   }
 
-  const backUrl = location.state?.item ? "/" : "/shop"
-  const backText = location.state?.item ? "Back to Inventory" : "Back to shop"
+  const from = location.state?.from === 'inventory'
+
+  const backUrl = from ? "/" : "/shop"
+  const backText = from ? "Back to Inventory" : "Back to shop"
   return (
     <main>
       <Link to={backUrl} className='back-btn'>{backText}</Link>
