@@ -1,48 +1,21 @@
 import React, { useState, useEffect } from 'react'
 import { getInventory, updateItem } from '../api/dataApi'
 import InventoryList from '../components/InventoryList'
+import CategorySelector from '../components/CategorySelector';
+import { usePageStatus } from '../hooks/usePageStatus';
+import StatusHandler from '../components/StatusHandler';
 
 const HomePage = ({inventory, refresh, onUpdate, onDelete, onEdit}) => {
-  const [activeCategory, setActiveCategory] = useState(
-    localStorage.getItem('selectedCategory') || 'spells'
-  )
-  const [error, setError] = useState(null)
-  const [loading, setLoading] = useState(true)
-
-  const loadData = async () => {
-    try {
-      setError(null)
-      setLoading(true)
-      await refresh()
-    } catch (error) {
-      setError(error.message)
-    } finally {
-      setLoading(false)
-    }
-  }
-
+  const { activeCategory, setActiveCategory, loading, error, wrapAsync } = usePageStatus()
+  
   useEffect(() => {
-    loadData()
-    localStorage.setItem('selectedCategory', activeCategory)
-  }, [activeCategory])
+    wrapAsync(() => refresh())
+  }, [])
 
-  if (error) {
-    return (
-      <div className='error'>
-        <h2>Error loading items</h2>
-        <p>{error}</p>
-      </div>
-    )
-  }
-
-  if (loading) {
-    return (
-      <div className='loader'>Loading items...</div>
-    )
-  }
-
-  const backpack = inventory.filter(item => item.type === 'equipment')
-  const spellbook = inventory.filter(item => item.type === 'spells')
+  const currentItems = inventory.filter(item => 
+    activeCategory === 'spells' ? item.type === 'spells' : item.type === 'equipment'
+  )
+  const isEmpty = currentItems.length === 0
 
   const handleIncrement = async (item) => {
     try {
@@ -72,30 +45,21 @@ const HomePage = ({inventory, refresh, onUpdate, onDelete, onEdit}) => {
     }
   }
 
-  const currentItems = activeCategory === 'spells' ? spellbook : backpack
-  const isEmpty = currentItems.length === 0
-
   return (
     <main>
-      <div>
-        <button 
-        className={activeCategory === 'spells' ? 'active' : ''} 
-        onClick={() => setActiveCategory('spells')}>Spellbook</button>
-        <button 
-        className={activeCategory === 'equipment' ? 'active' : ''} 
-        onClick={() => setActiveCategory('equipment')}>Backpack</button>
-      </div>
-      {isEmpty ? (
-        <p>Inventory is empty</p>
-      ) : (
-        <InventoryList 
-          items={currentItems}
-          onDelete={confirmAndDelete}
-          onIncrement={handleIncrement}
-          onDecrement={handleDecrement}
-          onEdit={onEdit}
-        />
-      )}
+      <CategorySelector onSelect={setActiveCategory} />
+      <StatusHandler loading={loading} error={error}>
+        {isEmpty ? (
+          <p>Inventory is empty</p>
+        ) : (
+          <InventoryList 
+            items={currentItems}
+            onDelete={confirmAndDelete}
+            onIncrement={handleIncrement}
+            onDecrement={handleDecrement}
+            onEdit={onEdit}/>
+        )}
+      </StatusHandler>
     </main>
   )
 }

@@ -1,49 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import { getAllItems, createItem, updateItem } from '../api/dataApi';
 import ItemList from '../components/ItemList';
+import CategorySelector from '../components/CategorySelector';
+import { usePageStatus } from '../hooks/usePageStatus';
+import StatusHandler from '../components/StatusHandler';
 
-const ShopPage = ({inventory, onAddItem, onUpdateQuantity}) => {
+const ShopPage = ({ onAddItem }) => {
   const [items, setItems] = useState([]);
-  const [activeCategory, setActiveCategory] = useState(
-    localStorage.getItem('selectedCategory') || 'spells'
-  )
-  const [error, setError] = useState(null)
-  const [loading, setLoading] = useState(true)
-  /* const [showModal, setShowModal] = useState(false) */
-
-  const fetchItems = async () => {
-    try {
-      setItems([])
-      setError(null)
-      setLoading(true)
-      const data = await getAllItems(activeCategory)
-      setItems(data);
-    } catch (error) {
-      setError(error.message)
-    } finally {
-      setLoading(false);
-    }
-  }
+  const { activeCategory, setActiveCategory, loading, error, wrapAsync } = usePageStatus()
 
   useEffect(() => {
-    fetchItems()
-    localStorage.setItem('selectedCategory', activeCategory)
+    const fetchItems = async () => {
+        const data = await getAllItems(activeCategory)
+        setItems(data);
+    }
+    wrapAsync(fetchItems)
   }, [activeCategory])
-
-  if (error) {
-    return (
-      <div className='error'>
-        <h2>Error loading items</h2>
-        <p>{error}</p>
-      </div>
-    )
-  }
-
-  if (loading) {
-    return (
-      <div className='loader'>Loading items...</div>
-    )
-  }
 
   const handleAddToInventory = async (newItem) => {
     try {
@@ -54,11 +26,10 @@ const ShopPage = ({inventory, onAddItem, onUpdateQuantity}) => {
   }
   return (
     <main>
-      <div>
-        <button onClick={() => setActiveCategory('spells')}>Spells</button>
-        <button onClick={() => setActiveCategory('equipment')}>Equipment</button>
-      </div>
-      <ItemList items={items} onAdd={handleAddToInventory}/>
+      <CategorySelector onSelect={setActiveCategory} />
+      <StatusHandler loading={loading} error={error}>
+        <ItemList items={items} onAdd={handleAddToInventory} />
+      </StatusHandler>
     </main>
   )
 }

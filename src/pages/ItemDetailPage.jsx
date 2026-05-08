@@ -3,64 +3,41 @@ import { useParams, Link, useLocation } from 'react-router-dom'
 import { getItemByIndex } from '../api/dataApi';
 import SpellDetail from '../components/SpellDetail';
 import EquipmentDetail from '../components/EquipmentDetail';
+import StatusHandler from '../components/StatusHandler';
+import { usePageStatus } from '../hooks/usePageStatus';
 
 const ItemDetailPage = () => {
   const { category, slug } = useParams();
   const location = useLocation();
-
   const [item, setItem] = useState(null);
-  const [error, setError] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { loading, error, wrapAsync } = usePageStatus(false)
 
-  const fetchItem = async () => {
-    try {
-      setLoading(true);
-      setError(null);
+  useEffect(() => {
+    const fetchItem = async () => {
       if (location.state?.item?.is_custom) {
         setItem(location.state.item);
-        setLoading(false)
         return
       }
       const data = await getItemByIndex(category, slug);
       setItem(data);
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
     }
-  }
+    wrapAsync(fetchItem)
+  }, [category, slug, location.state?.item])
 
-  useEffect(() => {
-    fetchItem();
-  }, [category, slug])
+  const fromInventory = location.state?.from === 'inventory'
+  const backUrl = fromInventory ? "/" : "/shop"
+  const backText = fromInventory ? "Back to Inventory" : "Back to shop"
 
-  if (error) {
-    return (
-      <div className='error'>
-        <h2>Error loading item</h2>
-        <p>{error}</p>
-      </div>
-    )
-  }
-
-  if (loading) {
-    return (
-      <div className='loader'>Loading item...</div>
-    )
-  }
-
-  const from = location.state?.from === 'inventory'
-
-  const backUrl = from ? "/" : "/shop"
-  const backText = from ? "Back to Inventory" : "Back to shop"
   return (
     <main>
-      <Link to={backUrl} className='back-btn'>{backText}</Link>
-      {category === 'spells' ? (
-        <SpellDetail item={item} />
-      ) : (
-        <EquipmentDetail item={item} />
-      )}
+      <StatusHandler loading={loading} error={error}>
+        <Link to={backUrl}>{backText}</Link>
+        {category === 'spells' ? (
+          <SpellDetail item={item} />
+        ) : (
+          <EquipmentDetail item={item} />
+        )}
+      </StatusHandler>
     </main>
   )
 }

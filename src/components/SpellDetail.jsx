@@ -1,6 +1,6 @@
 import React from 'react'
 
-const SpellDetail = ({item}) => {
+const SpellDetail = ({ item }) => {
   return (
     <section className='item-container'>
       <h2 className='title'>{item.name}</h2>

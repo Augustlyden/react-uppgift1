@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import './App.css'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Nav from './components/Nav'
@@ -71,18 +71,14 @@ function App() {
     }
   }
 
-  useEffect(() => {
-    fetchInventory()
-  }, [])
-
   return (
     <>
       <BrowserRouter>
         <Nav />
         <Routes>
-          <Route path='/' element={<HomePage inventory={inventory} onUpdate={handleUpdateItem} refresh={fetchInventory} onDelete={handleDelete} onEdit={handleUpdateItem}/>} />
-          <Route path='/shop' element={<ShopPage inventory={inventory}  onAddItem={handleAddItem}/>} />
-          <Route path='/create' element={<CreateItemPage onAddItem={handleAddItem} onUpdateItem={handleUpdateItem}/>}/>
+          <Route path='/' element={<HomePage inventory={inventory} onUpdate={handleUpdateItem} refresh={fetchInventory} onDelete={handleDelete} />} />
+          <Route path='/shop' element={<ShopPage onAddItem={handleAddItem} />} />
+          <Route path='/create' element={<CreateItemPage onAddItem={handleAddItem} onUpdateItem={handleUpdateItem} />}/>
           <Route path='/:category/:slug' element={<ItemDetailPage/>} />
         </Routes>
       </BrowserRouter>
