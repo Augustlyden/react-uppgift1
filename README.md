@@ -1,5 +1,3 @@
-# React inlämningsuppgift 1
-
 # RPG Inventory & Shop Manager
 
 ### August Lydén
