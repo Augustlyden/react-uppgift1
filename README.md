@@ -50,9 +50,10 @@ Applikationen använder följande datakällor:
 
 ---
 
-## ⚠️ Kända begränsningar
+## Kända begränsningar
 *   Applikationen kräver en internetuppkoppling för att hämta data från D&D-API:et.
 *   *Begränsning:* Just nu finns ingen sökfunktion i shoppen, utan användaren navigerar via kategorier.
+*   Långa laddningstider kan förekomma och vid uppstart av appen ser inventory ut att vara tom innan alla föremål visas
 
 ---
 
