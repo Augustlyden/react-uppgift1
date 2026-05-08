@@ -8,7 +8,6 @@ export const formatItemData = (item, category) => {
     id: `${category}-${item.index}`,
     name: item.name,
     slug: item.index,
-    quantity: 1,
     type: category,
     url: `/${category}/${item.index}`,
     level: item.level,
@@ -40,9 +39,59 @@ export const formatEquipmentDetails = (data) => {
   return {
     name: data.name,
     cost: `${data.cost.quantity} ${data.cost.unit}`,
+    quantity: 1,
     subCategory: data.equipment_category.name,
     desc: data.desc && data.desc.length > 0
       ? data.desc.join(" ")
       : "No description"
+  }
+}
+
+export const generateSlug = (name) => {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/\s+/g, '-')
+    .replace(/[^\w-]+/g, '')
+}
+
+export const formatBaseData = (data) => {
+  const slug = generateSlug(data.name)
+  return {
+    id: data.id || `${data.type}-custom-${Date.now()}`,
+    name: data.name,
+    slug: slug,
+    desc: data?.desc.trim() || "No description",
+    type: data.type,
+    url: `/${data.type}/${slug}`,
+    is_custom: true
+  }
+}
+
+export const formatCustomSpell = (data) => {
+  const base = formatBaseData(data)
+  return {
+    ...base,
+    level: Number(data.level),
+    levelText: getLevelText(Number(data.level)),
+    school: data.school?.trim() || null,
+    castingTime: data.castingTime?.trim() || null,
+    duration: data.duration?.trim() || null,
+    range: data.range?.trim() || null,
+    components: data?.components.trim(),
+    concentration: data?.concentration,
+    ritual: data?.ritual,
+    material: data?.material.trim() || "No materials needed",
+    higherLevel: data?.higherLevel.trim() || null
+  }
+}
+
+export const formatCustomEquipment = (data) => {
+  const base = formatBaseData(data)
+  return {
+    ...base,
+    cost: data?.cost.trim() || null,
+    subCategory: data?.subCategory.trim() || null,
+    quantity: data?.quantity || 1
   }
 }

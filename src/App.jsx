@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import './App.css'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import Nav from './components/Nav'
@@ -6,7 +6,7 @@ import HomePage from './pages/HomePage'
 import ShopPage from './pages/ShopPage'
 import ItemDetailPage from './pages/ItemDetailPage'
 import { createItem, deleteItem, getInventory, updateItem } from './api/dataApi'
-/* import CreateItemPage from './pages/CreateItemPage' */
+import CreateItemPage from './pages/CreateItemPage'
 
 function App() {
   const [inventory, setInventory] = useState([])
@@ -24,9 +24,15 @@ function App() {
   const handleUpdateItem = async (id, itemData) => {
     try {
       await updateItem(id, itemData)
-      await fetchInventory()
+      setInventory(prev => 
+        prev.map(item =>
+          item.id === id ? {...item, ...itemData } : item
+        )
+      )
+
+      return { status: 'updated' }
     } catch (error) {
-      console.error('updateQuantity failed:', error.message)
+      console.error('handleUpdateItem failed:', error.message)
     }
   }
 
@@ -40,12 +46,12 @@ function App() {
 
       if (existingItem && newItem.type === 'equipment') {
         await handleUpdateItem(existingItem.id, { quantity: existingItem.quantity + 1 })
-        await fetchInventory()
         return { status: 'updated_quantity' }
       }
 
       await createItem(newItem)
-      await fetchInventory()
+      setInventory(prev => [...prev, newItem])
+      
       return { status: 'created' }
     } catch (error) {
       console.error(`handleAddItem failed: ${newItem.name}`, error.message)
@@ -56,24 +62,23 @@ function App() {
   const handleDelete = async (id) => {
     try {
       await deleteItem(id)
-      await fetchInventory()
+      setInventory(prev => 
+        prev.filter(item => item.id !== id)
+      )
     } catch (error) {
       console.error('Delete failed', error.message)
+      await fetchInventory()
     }
   }
-
-  useEffect(() => {
-    fetchInventory()
-  }, [])
 
   return (
     <>
       <BrowserRouter>
         <Nav />
         <Routes>
-          <Route path='/' element={<HomePage inventory={inventory} onUpdate={handleUpdateItem} refresh={fetchInventory} onDelete={handleDelete}/>} />
-          <Route path='/shop' element={<ShopPage inventory={inventory}  onAddItem={handleAddItem}/>} />
-          {/* <Route path='/create' element={<CreateItemPage />} /> */}
+          <Route path='/' element={<HomePage inventory={inventory} onUpdate={handleUpdateItem} refresh={fetchInventory} onDelete={handleDelete} />} />
+          <Route path='/shop' element={<ShopPage onAddItem={handleAddItem} />} />
+          <Route path='/create' element={<CreateItemPage onAddItem={handleAddItem} onUpdateItem={handleUpdateItem} />}/>
           <Route path='/:category/:slug' element={<ItemDetailPage/>} />
         </Routes>
       </BrowserRouter>
